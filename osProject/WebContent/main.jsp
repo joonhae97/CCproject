@@ -38,7 +38,7 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav text-uppercase ml-auto">
           <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="#">소개</a>
+            <a class="nav-link js-scroll-trigger" href="about.html">소개</a>
           </li>
           <li class="nav-item">
             <a class="nav-link js-scroll-trigger" href="#">신청하기</a>
