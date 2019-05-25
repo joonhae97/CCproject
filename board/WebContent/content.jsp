@@ -101,7 +101,26 @@
                 }
             }
         }
+        
     
+        function cmDeleteOpen(comment_num){
+        	var msg = confirm("댓글을 삭제합니다.");
+        	if(msg == true){
+        		deleteCmt(comment_num);
+        	}
+        	else{
+        		return false;
+        	}
+        }
+        
+        function deleteCmt(comment_num){
+        	var param ="comment_num=" + comment_num;
+        	httpRequest = getXMLHttpRequest();
+            httpRequest.onreadystatechange = checkFunc;
+            httpRequest.open("POST", "CommentDelete.do", true);    
+            httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset=EUC-KR'); 
+            httpRequest.send(param);
+        }
     </script>
 </head>
 <body>
@@ -173,8 +192,8 @@
                         <a href="#">[답변]</a><br>
                     <!-- 댓글 작성자만 수정, 삭제 가능하도록 -->    
                     <c:if test="${comment.comment_id == sessionScope.id}">
-                        <a href="#">[수정]</a><br>    
-                        <a href="#">[삭제]</a>
+                        <a href="#" onclick = "cmUpdateOpen(${comment.comment_num})">[수정]</a><br>    
+                        <a href="#" onclick = "cmDeleteOpen(${comment.comment_num})">[삭제]</a>
                     </c:if>        
                     </div>
                 </td>
