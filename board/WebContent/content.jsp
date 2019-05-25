@@ -1,37 +1,134 @@
-<%@ page language="java" contentType="text/html; charset=euc-kr"
-    pageEncoding="UTF-8"%>
-    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-    
- <html>
+<%@ page language="java" contentType="text/html; charset=EUC-KR"
+    pageEncoding="EUC-KR"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>  
+ 
+<html>
 <head>
-<title>Í≤åÏãúÌåê</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</head>
+    <title>±€ ªÛºº∫∏±‚</title>
+    
+    <style type="text/css">
+        #wrap {
+            width: 800px;
+            margin: 0 auto 0 auto;    
+        }
+    
+        #detailBoard{
+            text-align :center;
+        }
+        
+        #title{
+            height : 16;
+            font-family :'µ∏øÚ';
+            font-size : 12;
+            text-align :center;
+            background-color: #F7F7F7;
+        }
+        
+        #btn{
+            font-family :'µ∏øÚ';
+            font-size : 14;
+            text-align :center;
+        }
+ 	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+ 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </style>
+    
+    <script type="text/javascript">
+        function changeView(value)
+        {
+            if(value == 0)    
+                location.href='BoardListAction.bo?page=${pageNum}';
+            else if(value == 1)
+                location.href='BoardReplyFormAction.bo?num=${board.board_num}&page=${pageNum}';
+        }
+        
 
+ 
+        var httpRequest = null;
+        
+        // httpRequest ∞¥√º ª˝º∫
+        function getXMLHttpRequest(){
+            var httpRequest = null;
+        
+            if(window.ActiveXObject){
+                try{
+                    httpRequest = new ActiveXObject("Msxml2.XMLHTTP");    
+                } catch(e) {
+                    try{
+                        httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+                    } catch (e2) { httpRequest = null; }
+                }
+            }
+            else if(window.XMLHttpRequest){
+                httpRequest = new window.XMLHttpRequest();
+            }
+            return httpRequest;    
+        }
+        
+        // ¥Ò±€ µÓ∑œ
+        function writeCmt()
+        {
+            var form = document.getElementById("writeCommentForm");
+            
+            var board = form.comment_board.value
+            var id = form.comment_id.value
+            var content = form.comment_content.value;
+            
+            if(!content)
+            {
+                alert("≥ªøÎ¿ª ¿‘∑¬«œººø‰.");
+                return false;
+            }
+            else
+            {    
+                var param="comment_board="+board+"&comment_id="+id+"&comment_content="+content;
+                httpRequest = getXMLHttpRequest();
+                httpRequest.onreadystatechange = checkFunc;
+                httpRequest.open("POST", "CommentWrite.do", true);    
+                httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset=EUC-KR'); 
+                httpRequest.send(param);
+            }
+        }
+        
+        function checkFunc(){
+            if(httpRequest.readyState == 4){
+                // ∞·∞˙∞™¿ª ∞°¡Æø¬¥Ÿ.
+                var resultText = httpRequest.responseText;
+                if(resultText == 1){ 
+                    document.location.reload(); // ªÛºº∫∏±‚ √¢ ªı∑Œ∞Ìƒß
+                }
+            }
+        }
+    
+    </script>
+</head>
 <body>
-	<div style="text-align:right">
-	ÏÇ¨Ïö©ÏûêID : ${id} <input type=button class="btn btn-info" value="Î°úÍ∑∏ÏïÑÏõÉ" OnClick="window.location='logout.do'">
+ 
+<div id="wrap">
+    <br><br>
+    <div style="text-align:right">
+	ªÁøÎ¿⁄ID : ${id} <input type=button class="btn btn-info" value="∑Œ±◊æ∆øÙ" OnClick="window.location='logout.do'">
 	</div>
+	
 	<c:forEach items="${articleList}" var="article">
 	<table class="table table-striped table-bordered table-hover" style="text-align:center">
-		<caption style="text-align:center">Í≤åÏãúÌåê ÎÇ¥Ïö©</caption>
+		<caption style="text-align:center">∞‘Ω√∆« ≥ªøÎ</caption>
 		<tr>
-			<td>Ï†úÎ™©</td>
+			<td>¡¶∏Ò</td>
 			<td style="text-align:left">${article.subject}</td>			
 		</tr>
 		<tr>
-			<td>ÏûëÏÑ±Ïûê</td>
+			<td>¿€º∫¿⁄</td>
 			<td style="text-align:left">${article.id}</td>						
 		</tr>
 		<tr>
-			<td>ÏûëÏÑ±ÏùºÏûê</td>
+			<td>¿€º∫¿œ¿⁄</td>
 			<td style="text-align:left">${article.boarddate}</td>						
 		</tr>
 		<tr>
-			<td>Ï°∞ÌöåÏàò</td>
+			<td>¡∂»∏ºˆ</td>
 			<td style="text-align:left">${article.score}</td>						
 		</tr>
 		<tr>
@@ -39,17 +136,84 @@
 			<td style="text-align:left">${article.email}</td>						
 		</tr>		
 		<tr>
-			<td>ÎÇ¥Ïö©</td>
+			<td>≥ªøÎ</td>
 			<td style="text-align:left">${article.content}</td>						
 		</tr>
-		
 	</table>
 	<div style="text-align:right">
-		<input type=button class="btn btn-danger" value="ÎãµÍ∏ÄÎã¨Í∏∞" OnClick="window.location='replyform.do?num=${article.num}'">
-		<input type=button class="btn btn-danger" value="ÏÇ≠Ï†úÌïòÍ∏∞" OnClick="window.location='delete.do?num=${article.num}'">
-		<input type=button class="btn btn-warning" value="ÏàòÏ†ïÌïòÍ∏∞" OnClick="window.location='modifyform.do?num=${article.num}'">			
-		<input type=button class="btn btn-secondary" value="ÎèåÏïÑÍ∞ÄÍ∏∞" OnClick="window.location='list.do'">
+		<input type=button class="btn btn-danger" value="¥‰±€¥ﬁ±‚" OnClick="window.location='replyform.do?num=${article.num}'">
+		<input type=button class="btn btn-danger" value="ªË¡¶«œ±‚" OnClick="window.location='delete.do?num=${article.num}'">
+		<input type=button class="btn btn-warning" value="ºˆ¡§«œ±‚" OnClick="window.location='modifyform.do?num=${article.num}'">			
+		<input type=button class="btn btn-secondary" value="µπæ∆∞°±‚" OnClick="window.location='list.do'">
 	</div>
-	</c:forEach>		
+	
+	
+    <!-- ¥Ò±€ ∫Œ∫– -->
+    <div id="comment">
+        <table border="1" bordercolor="lightgray">
+    <!-- ¥Ò±€ ∏Ò∑œ -->    
+        <c:forEach var="comment" items="${commentList}">
+            <tr>
+                <!-- æ∆¿Ãµ, ¿€º∫≥Ø¬• -->
+                <td width="150">
+                    <div>
+                        ${comment.comment_id}<br>
+                        <font size="2" color="lightgray">${comment.comment_date}</font>
+                    </div>
+                </td>
+                <!-- ∫ªπÆ≥ªøÎ -->
+                <td width="550">
+                    <div class="text_wrapper">
+                        ${comment.comment_content}
+                    </div>
+                </td>
+                <!-- πˆ∆∞ -->
+                <td width="100">
+                    <div id="btn" style="text-align:center;">
+                        <a href="#">[¥‰∫Ø]</a><br>
+                    <!-- ¥Ò±€ ¿€º∫¿⁄∏∏ ºˆ¡§, ªË¡¶ ∞°¥…«œµµ∑œ -->    
+                    <c:if test="${comment.comment_id == sessionScope.id}">
+                        <a href="#">[ºˆ¡§]</a><br>    
+                        <a href="#">[ªË¡¶]</a>
+                    </c:if>        
+                    </div>
+                </td>
+            </tr>
+            
+        </c:forEach>
+            <!-- ∑Œ±◊¿Œ «ﬂ¿ª ∞ÊøÏ∏∏ ¥Ò±€ ¿€º∫∞°¥… -->
+            <c:if test="${sessionScope.id !=null}">
+            <tr bgcolor="#F5F5F5">
+            <form id="writeCommentForm">
+                <input type="hidden" name="comment_board" value="${article.num}">
+                <input type="hidden" name="comment_id" value="${sessionScope.id}">
+                <!-- æ∆¿Ãµ-->
+                <td width="150">
+                    <div>
+                        ${sessionScope.id}
+                    </div>
+                </td>
+                <!-- ∫ªπÆ ¿€º∫-->
+                <td width="550">
+                    <div>
+                        <textarea name="comment_content" rows="4" cols="70" ></textarea>
+                    </div>
+                </td>
+                <!-- ¥Ò±€ µÓ∑œ πˆ∆∞ -->
+                <td width="100">
+                    <div id="btn" style="text-align:center;">
+                        <p><a href="#" onclick="writeCmt()">[¥Ò±€µÓ∑œ]</a></p>    
+                    </div>
+                </td>
+            </form>
+            </tr>
+            </c:if>
+    
+        </table>
+    </div>
+    </c:forEach>
+    
+</div>    
 </body>
 </html>
+
