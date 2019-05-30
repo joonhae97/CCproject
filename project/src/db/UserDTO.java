@@ -1,18 +1,14 @@
 package db;
 
-import java.time.LocalDateTime;
-
-public class ApplyDTO {
+public class UserDTO {
 	private String userid;
 	private String gender;
 	private String college;
 	private String hometown;
 	private String age;
-	private String minheight;
-	private String maxheight;
+	private String height;	
 	private String interesting;
 	private String character;
-	private LocalDateTime time; 
 
 	public String getUserid() {
 		return userid;
@@ -44,17 +40,11 @@ public class ApplyDTO {
 	public void setAge(String age) {
 		this.age = age;
 	}
-	public String getMinheight() {
-		return minheight;
+	public String getHeight() {
+		return height;
 	}
-	public void setMinheight(String minheight) {
-		this.minheight = minheight;
-	}
-	public String getMaxheight() {
-		return maxheight;
-	}
-	public void setMaxheight(String maxheight) {
-		this.maxheight = maxheight;
+	public void setHeight(String height) {
+		this.height = height;
 	}
 	public String getInteresting() {
 		return interesting;
@@ -67,11 +57,5 @@ public class ApplyDTO {
 	}
 	public void setCharacter(String character) {
 		this.character = character;
-	}
-	public LocalDateTime getTime() {
-		return time;
-	}
-	public void setTime(LocalDateTime time) {
-		this.time = time;
 	}
 }

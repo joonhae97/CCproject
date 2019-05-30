@@ -33,8 +33,14 @@
 		</c:if>
 		alert(c);
 	</script> -->
-	<c:if test="${matchinginfo ne '매칭되지 않았습니다.매칭되면 연결해드리겠습니다.'}">
-		
+	<%-- <c:if test="${check eq 'true'}">
+		<script>alert("${matchinginfo}")</script>
+	</c:if> --%>
+	<c:if test="${not empty matchinginfo}">
+		<script>alert("${matchinginfo}");</script>
+		<c:if test="${check eq  'true'}">
+			<%-- <% response.sendRedirect("loginform.do"); %> --%>
+		</c:if>
 	</c:if>
 <%-- <c:if test="${not empty matchinginfo}">
 	<script>
@@ -71,7 +77,8 @@
 			<td>선호 단과대</td>
 			<td>선호 고향</td>
 			<td>선호 나이</td>
-			<td>선호 키</td>
+			<td>최소 키</td>
+			<td>최대 키</td>
 			<td>선호 취미</td>
 			<td>선호 성격</td>
 			<td>신청 날짜</td>
@@ -84,7 +91,8 @@
 				<td>${dto.college}</td>
 				<td>${dto.hometown}</td>
 				<td>${dto.age}</td>
-				<td>${dto.height}</td>
+				<td>${dto.minheight}</td>
+				<td>${dto.maxheight}</td>
 				<td>${dto.interesting}</td>
 				<td>${dto.character}</td>
 				<td>${dto.time}</td>

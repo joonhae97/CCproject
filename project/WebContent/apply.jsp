@@ -61,16 +61,12 @@
 			<tr>
 				<td>키</td>
 				<td>
-					<input type="checkbox" name="height" value="140">~140&nbsp;&nbsp;
-					<input type="checkbox" name="height" value="145">145~150&nbsp;&nbsp;
-					<input type="checkbox" name="height" value="150">150~155&nbsp;&nbsp;
-					<input type="checkbox" name="height" value="155">155~160&nbsp;&nbsp;
-					<input type="checkbox" name="height" value="160">160~165&nbsp;&nbsp;<br />
-					<input type="checkbox" name="height" value="165">165~170&nbsp;&nbsp;
-					<input type="checkbox" name="height" value="170">170~175&nbsp;&nbsp;
-					<input type="checkbox" name="height" value="175">175~180&nbsp;&nbsp;
-					<input type="checkbox" name="height" value="180">180~185&nbsp;&nbsp;
-					<input type="checkbox" name="height" value="185">185~&nbsp;&nbsp;
+					<!-- 최소<input type="text" name="minheight">
+					~ 최대<input type="text" name="maxheight"> -->
+					
+					<!--숫자만 입력할 수 있게  -->
+					<input required type="text" name="minheight" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+					<input required type="text" name="maxheight" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
 				</td>
 			</tr>
 			<tr>

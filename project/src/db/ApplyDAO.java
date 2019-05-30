@@ -47,7 +47,8 @@ public class ApplyDAO {
 			data.setCollege(rs.getString("college"));
 			data.setHometown(rs.getString("hometown"));
 			data.setAge(rs.getString("age"));
-			data.setHeight(rs.getString("height"));
+			data.setMinheight(rs.getString("minheight"));
+			data.setMaxheight(rs.getString("maxheight"));
 			data.setInteresting(rs.getString("interesting"));
 			data.setCharacter(rs.getString("character"));
 			data.setTime(rs.getTimestamp("applytime").toLocalDateTime());
@@ -67,7 +68,7 @@ public class ApplyDAO {
 		}
 		return applylist;
 	}
-	public ApplyDTO user(String id){
+	/*public ApplyDTO user(String id){
 		ApplyDTO userinfo=new ApplyDTO();
 		
 		try {
@@ -84,7 +85,8 @@ public class ApplyDAO {
 		userinfo.setCollege(rs.getString("college"));
 		userinfo.setHometown(rs.getString("hometown"));
 		userinfo.setAge(rs.getString("age"));
-		userinfo.setHeight(rs.getString("height"));
+		userinfo.setMinheight(rs.getString("minheight"));
+		userinfo.setMaxheight(rs.getString("maxheight"));
 		userinfo.setInteresting(rs.getString("interesting"));
 		userinfo.setCharacter(rs.getString("character"));
 		
@@ -120,7 +122,8 @@ public class ApplyDAO {
 			data.setCollege(rs.getString("college"));
 			data.setHometown(rs.getString("hometown"));
 			data.setAge(rs.getString("age"));
-			data.setHeight(rs.getString("height"));
+			data.setMinheight(rs.getString("minheight"));
+			data.setMaxheight(rs.getString("maxheight"));
 			data.setInteresting(rs.getString("interesting"));
 			data.setCharacter(rs.getString("character"));
 			userlist.add(data);
@@ -139,7 +142,7 @@ public class ApplyDAO {
 		}
 		return userlist;
 	}
-	
+	*/
 	public ApplyDTO application(String id) {
 		ApplyDTO data=new ApplyDTO();
 		try {
@@ -154,7 +157,8 @@ public class ApplyDAO {
 				data.setCollege(rs.getString("college"));
 				data.setHometown(rs.getString("hometown"));
 				data.setAge(rs.getString("age"));
-				data.setHeight(rs.getString("height"));
+				data.setMinheight(rs.getString("minheight"));
+				data.setMaxheight(rs.getString("maxheight"));
 				data.setInteresting(rs.getString("interesting"));
 				data.setCharacter(rs.getString("character"));
 			}
@@ -164,7 +168,8 @@ public class ApplyDAO {
 				data.setCollege("신청 정보가 없습니다.");
 				data.setHometown("신청 정보가 없습니다.");
 				data.setAge("신청 정보가 없습니다.");
-				data.setHeight("신청 정보가 없습니다.");
+				data.setMinheight("0");
+				data.setMaxheight("0");
 				data.setInteresting("신청 정보가 없습니다.");
 				data.setCharacter("신청 정보가 없습니다.");
 			}
@@ -183,10 +188,10 @@ public class ApplyDAO {
 		return data;
 	}
 	public void write(String _userid, String _gender, String _college, String _hometown, 
-			String _age, String _height, String _interesting, String _character) {
+			String _age, String _minheight, String _maxheight, String _interesting, String _character) {
 		try {
 			con=ds.getConnection();
-			String query="INSERT INTO applytable values (?, ?, ?, ?, ?, ?, ?, ?,?)";
+			String query="INSERT INTO applytable values (?, ?, ?, ?, ?, ?, ?, ?,?,?)";
 			
 			pstmt=con.prepareStatement(query);
 			
@@ -195,10 +200,11 @@ public class ApplyDAO {
 			pstmt.setString(3, _college);
 			pstmt.setString(4, _hometown);
 			pstmt.setString(5, _age);
-			pstmt.setString(6, _height);
-			pstmt.setString(7, _interesting);
-			pstmt.setString(8, _character);
-			pstmt.setTimestamp(9, Timestamp.valueOf(LocalDateTime.now()));
+			pstmt.setString(6, _minheight);
+			pstmt.setString(7, _maxheight);
+			pstmt.setString(8, _interesting);
+			pstmt.setString(9, _character);
+			pstmt.setTimestamp(10, Timestamp.valueOf(LocalDateTime.now()));
 
 			pstmt.executeUpdate();
 			
@@ -241,5 +247,4 @@ public class ApplyDAO {
 			
 		}
 	}
-	
 }

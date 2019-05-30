@@ -38,14 +38,9 @@ public class BoardApplyCommand implements BoardCommand {
 			}
 		}
 
-		arr = request.getParameterValues("height");
-		String height = "";
-		if (arr != null) {
-			for (String val : arr) {
-				height += val + " ";
-			}
-		}
-
+		String minheight = request.getParameter("minheight");
+		String maxheight = request.getParameter("maxheight");
+		
 		arr = request.getParameterValues("interesting");
 		String interesting = "";
 		if (arr != null) {
@@ -64,6 +59,6 @@ public class BoardApplyCommand implements BoardCommand {
 		/*LocalDateTime time=LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));*/
 		
 		ApplyDAO dao = new ApplyDAO();
-		dao.write(userid, gender, college, hometown, age, height, interesting, character);
+		dao.write(userid, gender, college, hometown, age, minheight,maxheight, interesting, character);
 	}
 }

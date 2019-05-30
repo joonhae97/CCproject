@@ -52,6 +52,9 @@ public class BoardFrontController extends HttpServlet {
 		else if(com.equals("/BoardApplyAction.do")) {
 			command = new BoardApplyCommand();
 			command.execute(request, response);
+			nextPage="match.do";
+		}
+		else if(com.equals("/match.do")) {
 			command = new BoardMatchCommand();
 			command.execute(request, response);
 			nextPage="list.do";
@@ -60,7 +63,6 @@ public class BoardFrontController extends HttpServlet {
 			command = new BoardApplicationCommand();
 			command.execute(request, response);
 			nextPage="application.jsp";
-			
 		}
 		else if(com.equals("/list.do")) {
 			command = new BoardListCommand();
@@ -71,7 +73,6 @@ public class BoardFrontController extends HttpServlet {
 			command=new BoardDeleteCommand();
 			command.execute(request,response);
 			nextPage="list.do";
-			
 		}
 		else if(com.equals("/loginform.do")) {
 			nextPage="loginform.jsp";
