@@ -33,7 +33,7 @@ public class BoardListAction implements Action{
         HashMap<String, Object> listOpt = new HashMap<String, Object>();
         listOpt.put("opt", opt);
         listOpt.put("condition", condition);
-        listOpt.put("start", spage*10-9);
+        listOpt.put("start", spage*10-10);
         
         BoardDAO dao = BoardDAO.getInstance();
         int listCount = dao.getBoardListCount(listOpt);

@@ -129,67 +129,56 @@ public class BoardDAO
                 // BOARD_RE_SEQ(답변글 순서)의 오름차순으로 정렬 한 후에
                 // 10개의 글을 한 화면에 보여주는(start번째 부터 start+9까지) 쿼리
                 // desc : 내림차순, asc : 오름차순 ( 생략 가능 )
-            	String sql = "select * from (select BOARD_NUM, BOARD_ID, BOARD_SUBJECT"
-                		+ ", BOARD_CONTENT, BOARD_FILE, BOARD_COUNT, BOARD_RE_REF, BOARD_RE_LEV, BOARD_RE_SEQ, BOARD_DATE "
-                		+ "FROM (select * from board order by BOARD_RE_REF desc, BOARD_RE_SEQ asc)A)B where BOARD_NUM>=? and BOARD_NUM<=?";
-
+            	
+            	String sql = "select * from board order by BOARD_RE_REF desc, BOARD_RE_SEQ asc LIMIT 10 OFFSET ?";
             	pstmt = conn.prepareStatement(sql);
                 	pstmt.setInt(1, start);
-                	pstmt.setInt(2, start+9);
                 
             }
             else if(opt.equals("0")) // 제목으로 검색
             {
             	
-            	String sql = "select * from (select BOARD_NUM, BOARD_ID, BOARD_SUBJECT"
-            			+ ", BOARD_CONTENT, BOARD_FILE, BOARD_DATE, BOARD_COUNT, BOARD_RE_REF, BOARD_RE_LEV, BOARD_RE_SEQ "
-            			+ "FROM (select * from board where BOARD_SUBJECT like ? order BY BOARD_RE_REF desc, BOARD_RE_SEQ asc)A)B "
-            			+ "where BOARD_NUM>=? and BOARD_NUM<=?";
-             
+            	String sql = "select * from board where BOARD_SUBJECT like ? order BY BOARD_RE_REF desc, BOARD_RE_SEQ asc "
+            			+ "LIMIT 10 OFFSET ?";
+
                 pstmt = conn.prepareStatement(sql);
                 	pstmt.setString(1, "%"+condition+"%");
                 	pstmt.setInt(2, start);
-                	pstmt.setInt(3, start+9);
+         
                 
             }
             else if(opt.equals("1")) // 내용으로 검색
             {
-            	String sql = "select * from (select BOARD_NUM, BOARD_ID, BOARD_SUBJECT"
-            			+ ", BOARD_CONTENT, BOARD_FILE, BOARD_DATE, BOARD_COUNT, BOARD_RE_REF, BOARD_RE_LEV, BOARD_RE_SEQ "
-            			+ "FROM (select * from board where BOARD_CONTENT like ? order BY BOARD_RE_REF desc, BOARD_RE_SEQ asc)A)B"
-            			+ "where BOARD_NUM>=? and BOARD_NUM<=?"; 
-                
+            	String sql = "select * from board where BOARD_CONTENT like ? order BY BOARD_RE_REF desc, BOARD_RE_SEQ asc "
+            			+ "LIMIT 10 OFFSET ?";
                 pstmt = conn.prepareStatement(sql);
                 pstmt.setString(1, "%"+condition+"%");
-                pstmt.setInt(2, start);
-                pstmt.setInt(3, start+9);
+            	pstmt.setInt(2, start);
+
+               
             }
             else if(opt.equals("2")) // 제목+내용으로 검색
             {
-            	String sql = "select * from (select BOARD_NUM, BOARD_ID, BOARD_SUBJECT"
-            			+ ", BOARD_CONTENT, BOARD_FILE, BOARD_DATE, BOARD_COUNT, BOARD_RE_REF, BOARD_RE_LEV, BOARD_RE_SEQ "
-            			+ "FROM (select * from board where BOARD_SUBJECT like ? OR BOARD_CONTENT like ? "
-            			+ "order BY BOARD_RE_REF desc, BOARD_RE_SEQ asc)A)B where BOARD_NUM>=? and BOARD_NUM<=? ";
-            
+            	String sql = "select * from board where BOARD_SUBJECT like ? OR BOARD_CONTENT like ? "
+            			+ "order BY BOARD_RE_REF desc, BOARD_RE_SEQ asc"
+            			+ "LIMIT 10 OFFSET ?";
                 
                 pstmt = conn.prepareStatement(sql);
                 pstmt.setString(1, "%"+condition+"%");
                 pstmt.setString(2, "%"+condition+"%");
-                pstmt.setInt(3, start);
-                pstmt.setInt(4, start+9);
+            	pstmt.setInt(3, start);
+
+               
                 
             }
             else if(opt.equals("3")) // 글쓴이로 검색
             {
-            	String sql = "select * from (select BOARD_NUM, BOARD_ID, BOARD_SUBJECT"
-            			+ ", BOARD_CONTENT, BOARD_FILE, BOARD_DATE, BOARD_COUNT , BOARD_RE_REF, BOARD_RE_LEV, BOARD_RE_SEQ "
-            			+ "FROM (select * from board where BOARD_ID like ? order BY BOARD_RE_REF desc, BOARD_RE_SEQ asc)A)B "
-            			+ "where BOARD_NUM>=? and BOARD_NUM<=?";
-
+            	String sql = "select * from board where BOARD_ID like ? order BY BOARD_RE_REF desc, BOARD_RE_SEQ asc "
+            			+ "LIMIT 10 OFFSET ?";
                 pstmt = conn.prepareStatement(sql);
                 pstmt.setString(1, "%"+condition+"%");
-                pstmt.setInt(2, start);
-                pstmt.setInt(3, start+9);
+            	pstmt.setInt(2, start);
+
             }
             
             rs = pstmt.executeQuery();
