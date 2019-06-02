@@ -37,7 +37,7 @@ public class BoardListAction implements Action{
         
         BoardDAO dao = BoardDAO.getInstance();
         int listCount = dao.getBoardListCount(listOpt);
-        System.out.println("try");
+        System.out.println(listOpt);
         ArrayList<BoardBean> list =  dao.getBoardList(listOpt);
         System.out.println("success");
 

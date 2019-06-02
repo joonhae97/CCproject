@@ -2,6 +2,7 @@ package com.board.model;
  
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -56,6 +57,7 @@ public class BoardDAO
     public boolean boardInsert(BoardBean board)
     {
         boolean result = false;
+        int currval = 0;
         System.out.println("ss");
         try {
         	Class.forName("com.mysql.jdbc.Driver");
@@ -65,21 +67,28 @@ public class BoardDAO
           	String dbPass = "1234";
         	conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
             conn.setAutoCommit(false);
-            String sql = "INSERT INTO board (BOARD_NUM, BOARD_ID, BOARD_SUBJECT, BOARD_CONTENT, BOARD_FILE"
-            		+ ", BOARD_RE_REF, BOARD_RE_LEV, BOARD_RE_SEQ, BOARD_COUNT, BOARD_DATE) VALUES(?,?,?,?,?,?,?,?,?,now())";
+            
+            Statement stmt = conn.createStatement();
+			String sql = "select board_num from board";
+			ResultSet rs = stmt.executeQuery(sql);
+			while(rs.next()) {
+				currval = rs.getInt("board_num");
+			}
+			
+            sql = "INSERT INTO board (BOARD_NUM, BOARD_ID, BOARD_SUBJECT, BOARD_CONTENT, BOARD_FILE"
+            		+ ", BOARD_RE_REF, BOARD_RE_LEV, BOARD_RE_SEQ, BOARD_COUNT, BOARD_DATE) VALUES(NULL,?,?,?,?,?,?,?,?,now())";
             // 시퀀스 값을 글번호와 그룹번호로 사용
-            int num = board.getBoard_num()+1;
  
-            pstmt = conn.prepareStatement(sql.toString());
-            pstmt.setInt(1, num);
-            pstmt.setString(2, board.getBoard_id());
-            pstmt.setString(3, board.getBoard_subject());
-            pstmt.setString(4, board.getBoard_content());
-            pstmt.setString(5, board.getBoard_file());
-            pstmt.setInt(6, num);
+            pstmt = conn.prepareStatement(sql);
+            
+            pstmt.setString(1, board.getBoard_id());
+            pstmt.setString(2, board.getBoard_subject());
+            pstmt.setString(3, board.getBoard_content());
+            pstmt.setString(4, board.getBoard_file());
+            pstmt.setInt(5,currval+1);
+            pstmt.setInt(6, 0);
             pstmt.setInt(7, 0);
             pstmt.setInt(8, 0);
-            pstmt.setInt(9, 0);
             
             int flag = pstmt.executeUpdate();
             if(flag > 0){
@@ -101,7 +110,9 @@ public class BoardDAO
         String opt = (String)listOpt.get("opt"); // 검색옵션(제목, 내용, 글쓴이 등..)
         String condition = (String)listOpt.get("condition"); // 검색내용
         int start = (Integer)listOpt.get("start"); // 현재 페이지번호
-        
+        System.out.println(opt);
+        System.out.println(condition);
+        System.out.println(start);
         try {
         	Class.forName("com.mysql.jdbc.Driver");
         	String jdbcDriver = "jdbc:mysql://127.0.0.1/jspdb";
@@ -127,10 +138,10 @@ public class BoardDAO
             else if(opt.equals("0")) // 제목으로 검색
             {
             	
-            	String sql = "select * from (select rownum rnum, BOARD_NUM, BOARD_ID, BOARD_SUBJECT"
+            	String sql = "select * from (select BOARD_NUM, BOARD_ID, BOARD_SUBJECT"
             			+ ", BOARD_CONTENT, BOARD_FILE, BOARD_DATE, BOARD_COUNT, BOARD_RE_REF, BOARD_RE_LEV, BOARD_RE_SEQ "
-            			+ "FROM (select * from board where BOARD_SUBJECT like ? order BY BOARD_RE_REF desc, BOARD_RE_SEQ asc)) "
-            			+ "where rnum>=? and rnum<=?";
+            			+ "FROM (select * from board where BOARD_SUBJECT like ? order BY BOARD_RE_REF desc, BOARD_RE_SEQ asc)A)B "
+            			+ "where BOARD_NUM>=? and BOARD_NUM<=?";
              
                 pstmt = conn.prepareStatement(sql);
                 	pstmt.setString(1, "%"+condition+"%");
@@ -140,10 +151,10 @@ public class BoardDAO
             }
             else if(opt.equals("1")) // 내용으로 검색
             {
-            	String sql = "select * from (select rownum rnum, BOARD_NUM, BOARD_ID, BOARD_SUBJECT"
+            	String sql = "select * from (select BOARD_NUM, BOARD_ID, BOARD_SUBJECT"
             			+ ", BOARD_CONTENT, BOARD_FILE, BOARD_DATE, BOARD_COUNT, BOARD_RE_REF, BOARD_RE_LEV, BOARD_RE_SEQ "
-            			+ "FROM (select * from board where BOARD_CONTENT like ? order BY BOARD_RE_REF desc, BOARD_RE_SEQ asc))"
-            			+ "where rnum>=? and rnum<=?"; 
+            			+ "FROM (select * from board where BOARD_CONTENT like ? order BY BOARD_RE_REF desc, BOARD_RE_SEQ asc)A)B"
+            			+ "where BOARD_NUM>=? and BOARD_NUM<=?"; 
                 
                 pstmt = conn.prepareStatement(sql);
                 pstmt.setString(1, "%"+condition+"%");
@@ -152,10 +163,10 @@ public class BoardDAO
             }
             else if(opt.equals("2")) // 제목+내용으로 검색
             {
-            	String sql = "select * from (select rownum rnum, BOARD_NUM, BOARD_ID, BOARD_SUBJECT"
+            	String sql = "select * from (select BOARD_NUM, BOARD_ID, BOARD_SUBJECT"
             			+ ", BOARD_CONTENT, BOARD_FILE, BOARD_DATE, BOARD_COUNT, BOARD_RE_REF, BOARD_RE_LEV, BOARD_RE_SEQ "
             			+ "FROM (select * from board where BOARD_SUBJECT like ? OR BOARD_CONTENT like ? "
-            			+ "order BY BOARD_RE_REF desc, BOARD_RE_SEQ asc)) where rnum>=? and rnum<=? ";
+            			+ "order BY BOARD_RE_REF desc, BOARD_RE_SEQ asc)A)B where BOARD_NUM>=? and BOARD_NUM<=? ";
             
                 
                 pstmt = conn.prepareStatement(sql);
@@ -167,10 +178,10 @@ public class BoardDAO
             }
             else if(opt.equals("3")) // 글쓴이로 검색
             {
-            	String sql = "select * from (select rownum rnum, BOARD_NUM, BOARD_ID, BOARD_SUBJECT"
+            	String sql = "select * from (select BOARD_NUM, BOARD_ID, BOARD_SUBJECT"
             			+ ", BOARD_CONTENT, BOARD_FILE, BOARD_DATE, BOARD_COUNT , BOARD_RE_REF, BOARD_RE_LEV, BOARD_RE_SEQ "
-            			+ "FROM (select * from board where BOARD_ID like ? order BY BOARD_RE_REF desc, BOARD_RE_SEQ asc))"
-            			+ "where rnum>=? and rnum<=?";
+            			+ "FROM (select * from board where BOARD_ID like ? order BY BOARD_RE_REF desc, BOARD_RE_SEQ asc)A)B "
+            			+ "where BOARD_NUM>=? and BOARD_NUM<=?";
 
                 pstmt = conn.prepareStatement(sql);
                 pstmt.setString(1, "%"+condition+"%");

@@ -25,7 +25,6 @@ public class BoardWriteAction implements Action
         int fileSize= 5*1024*1024;
         // 업로드될 폴더 경로
         String uploadPath = request.getServletContext().getRealPath("/UploadFolder");
- 
         try {
             
             // 파일업로드 
@@ -53,7 +52,7 @@ public class BoardWriteAction implements Action
             
             if(result){
                 forward.setRedirect(true);
-                forward.setNextPath("BoardListForm.bo");
+                forward.setNextPath("BoardListAction.bo");
             }
             
         } catch (Exception e) {
