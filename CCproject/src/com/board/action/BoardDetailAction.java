@@ -1,5 +1,7 @@
 package com.board.action;
  
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
  
@@ -7,7 +9,11 @@ import com.board.model.BoardBean;
 import com.board.model.BoardDAO;
 import com.common.action.Action;
 import com.common.action.ActionForward;
- 
+
+import com.board.comment.model.CommentBean;
+import com.board.comment.model.CommentDAO;
+
+
 public class BoardDetailAction implements Action
 {
     @Override
@@ -25,8 +31,17 @@ public class BoardDetailAction implements Action
         BoardDAO dao = BoardDAO.getInstance();
         BoardBean board = dao.getDetail(boardNum);
         boolean result = dao.updateCount(boardNum);
+        
+        // 게시글 번호를 이용하여 해당 글에 있는 댓글 목록을 가져온다.
+        CommentDAO commentDAO = CommentDAO.getInstance();
+        ArrayList<CommentBean> commentList = commentDAO.getCommentList(boardNum);
+        
+        // 댓글이 1개라도 있다면 request에 commentList를 세팅한다.
+        if(commentList.size() > 0)    request.setAttribute("commentList", commentList);
+                
         request.setAttribute("board", board);
         request.setAttribute("pageNum", pageNum);
+
         
         if(result){
             forward.setRedirect(false); // 단순한 조회이므로
