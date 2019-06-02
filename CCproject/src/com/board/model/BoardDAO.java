@@ -421,6 +421,46 @@ public class BoardDAO
         return result;
     } // end deleteBoard
 
+ // 글 수정
+    public boolean updateBoard(BoardBean border) 
+    {
+        boolean result = false;
+        
+        try{
+        	Class.forName("com.mysql.jdbc.Driver");
+        	String jdbcDriver = "jdbc:mysql://127.0.0.1/jspdb";
+          	String dbUser = "scott";
+          	String dbPass = "1234";
+        	conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
+            conn.setAutoCommit(false);
+            
+            String sql = "UPDATE board SET BOARD_SUBJECT=? ,BOARD_CONTENT=? ,BOARD_FILE=? ,BOARD_DATE=now() WHERE BOARD_NUM=?";
+       
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, border.getBoard_subject());
+            pstmt.setString(2, border.getBoard_content());
+            pstmt.setString(3, border.getBoard_file());
+            pstmt.setInt(4, border.getBoard_num());
+            
+            int flag = pstmt.executeUpdate();
+            if(flag > 0){
+                result = true;
+                conn.commit(); // 완료시 커밋
+            }
+            
+        } catch (Exception e) {
+            try {
+                conn.rollback(); // 오류시 롤백
+            } catch (SQLException sqle) {
+                sqle.printStackTrace();
+            }
+            throw new RuntimeException(e.getMessage());
+        }
+    
+        close();
+        return result;
+    } // end updateBoard
+
 
     // DB 자원해제
     private void close()
