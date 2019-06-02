@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -14,6 +15,7 @@ public class BoardDAO
 {
     private Connection conn;
     private PreparedStatement pstmt;
+    private Statement stmt;
     private ResultSet rs;
     
     private static BoardDAO instance;
@@ -76,19 +78,19 @@ public class BoardDAO
 			}
 			
             sql = "INSERT INTO board (BOARD_NUM, BOARD_ID, BOARD_SUBJECT, BOARD_CONTENT, BOARD_FILE"
-            		+ ", BOARD_RE_REF, BOARD_RE_LEV, BOARD_RE_SEQ, BOARD_COUNT, BOARD_DATE) VALUES(NULL,?,?,?,?,?,?,?,?,now())";
+            		+ ", BOARD_RE_REF, BOARD_RE_LEV, BOARD_RE_SEQ, BOARD_COUNT, BOARD_DATE) VALUES(?,?,?,?,?,?,?,?,?,now())";
             // 시퀀스 값을 글번호와 그룹번호로 사용
  
             pstmt = conn.prepareStatement(sql);
-            
-            pstmt.setString(1, board.getBoard_id());
-            pstmt.setString(2, board.getBoard_subject());
-            pstmt.setString(3, board.getBoard_content());
-            pstmt.setString(4, board.getBoard_file());
-            pstmt.setInt(5,currval+1);
-            pstmt.setInt(6, 0);
+            pstmt.setInt(1, currval+1);
+            pstmt.setString(2, board.getBoard_id());
+            pstmt.setString(3, board.getBoard_subject());
+            pstmt.setString(4, board.getBoard_content());
+            pstmt.setString(5, board.getBoard_file());
+            pstmt.setInt(6,currval+1);
             pstmt.setInt(7, 0);
             pstmt.setInt(8, 0);
+            pstmt.setInt(9, 0);
             
             int flag = pstmt.executeUpdate();
             if(flag > 0){
@@ -119,6 +121,7 @@ public class BoardDAO
           	String dbUser = "scott";
           	String dbPass = "1234";
         	conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
+    		
             // 글목록 전체를 보여줄 때
             if(opt == null)
             {
@@ -282,6 +285,152 @@ public class BoardDAO
         close();
         return result;
     } // end getBoardListCount
+    
+    // 상세보기
+    public BoardBean getDetail(int boardNum)
+    {    
+        BoardBean board = null;
+        
+        try {
+        	Class.forName("com.mysql.jdbc.Driver");
+        	String jdbcDriver = "jdbc:mysql://127.0.0.1/jspdb";
+          	String dbUser = "scott";
+          	String dbPass = "1234";
+        	conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
+            conn.setAutoCommit(false);
+
+        	String sql = "select * from board where BOARD_NUM = ?";
+   
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, boardNum);
+            
+            rs = pstmt.executeQuery();
+            if(rs.next())
+            {
+                board = new BoardBean();
+                board.setBoard_num(boardNum);
+                board.setBoard_id(rs.getString("BOARD_ID"));
+                board.setBoard_subject(rs.getString("BOARD_SUBJECT"));
+                board.setBoard_content(rs.getString("BOARD_CONTENT"));
+                board.setBoard_file(rs.getString("BOARD_FILE"));
+                board.setBoard_count(rs.getInt("BOARD_COUNT"));
+                board.setBoard_re_ref(rs.getInt("BOARD_RE_REF"));
+                board.setBoard_re_lev(rs.getInt("BOARD_RE_LEV"));
+                board.setBoard_re_seq(rs.getInt("BOARD_RE_SEQ"));
+                board.setBoard_date(rs.getDate("BOARD_DATE"));
+            }
+            
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        
+        close();
+        return board;
+    } // end getDetail()
+    
+    // 조회수 증가
+    public boolean updateCount(int boardNum)
+    {
+        boolean result = false;
+        
+        try {
+        	Class.forName("com.mysql.jdbc.Driver");
+        	String jdbcDriver = "jdbc:mysql://127.0.0.1/jspdb";
+          	String dbUser = "scott";
+          	String dbPass = "1234";
+        	conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
+            conn.setAutoCommit(false);
+
+            String sql = "update board set BOARD_COUNT = BOARD_COUNT+1 where BOARD_NUM = ?";
+
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, boardNum);
+            
+            int flag = pstmt.executeUpdate();
+            if(flag > 0){
+                result = true;
+                conn.commit(); // 완료시 커밋
+            }    
+        } catch (Exception e) {
+            try {
+                conn.rollback(); // 오류시 롤백
+            } catch (SQLException sqle) {
+                sqle.printStackTrace();
+            }
+            throw new RuntimeException(e.getMessage());
+        }
+        
+        close();
+        return result;
+    } // end updateCount
+    
+ // 삭제할 파일명을 가져온다.
+    public String getFileName(int boardNum)
+    {
+        String fileName = null;
+        
+        try {
+        	Class.forName("com.mysql.jdbc.Driver");
+        	String jdbcDriver = "jdbc:mysql://127.0.0.1/jspdb";
+          	String dbUser = "scott";
+          	String dbPass = "1234";
+        	conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
+            conn.setAutoCommit(false);
+            
+            String sql = "SELECT BOARD_FILE from board where BOARD_NUM=?";
+            
+            pstmt = conn.prepareStatement(sql.toString());
+            pstmt.setInt(1, boardNum);
+            
+            rs = pstmt.executeQuery();
+            if(rs.next()) fileName = rs.getString("BOARD_FILE");
+            
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        
+        close();
+        return fileName;
+    } // end getFileName
+        
+    // 게시글 삭제
+    public boolean deleteBoard(int boardNum) 
+    {
+        boolean result = false;
+ 
+        try {
+        	Class.forName("com.mysql.jdbc.Driver");
+        	String jdbcDriver = "jdbc:mysql://127.0.0.1/jspdb";
+          	String dbUser = "scott";
+          	String dbPass = "1234";
+        	conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
+            conn.setAutoCommit(false);
+            
+            String sql = "DELETE FROM board WHERE BOARD_NUM =?";
+            		
+           
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, boardNum);
+            
+            int flag = pstmt.executeUpdate();
+            if(flag > 0){
+                result = true;
+                conn.commit(); // 완료시 커밋
+            }
+         
+            
+        } catch (Exception e) {
+            try {
+                conn.rollback(); // 오류시 롤백
+            } catch (SQLException sqle) {
+                sqle.printStackTrace();
+            }
+            throw new RuntimeException(e.getMessage());
+        }
+ 
+        close();
+        return result;
+    } // end deleteBoard
 
 
     // DB 자원해제

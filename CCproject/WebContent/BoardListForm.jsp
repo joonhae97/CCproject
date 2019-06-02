@@ -56,7 +56,7 @@
             <tr>
                 <td>${board.board_num}</td>
                 <td>
-                    <a href="BoardDetailAction.bo?num=${board.board_num}&pageNum=${pageNum}">
+                    <a href="BoardDetailAction.bo?num=${board.board_num}&pageNum=${spage}">
                     ${board.board_subject}
                     </a>
                 </td>

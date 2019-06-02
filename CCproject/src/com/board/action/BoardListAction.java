@@ -37,9 +37,7 @@ public class BoardListAction implements Action{
         
         BoardDAO dao = BoardDAO.getInstance();
         int listCount = dao.getBoardListCount(listOpt);
-        System.out.println(listOpt);
         ArrayList<BoardBean> list =  dao.getBoardList(listOpt);
-        System.out.println("success");
 
         // 한 화면에 10개의 게시글을 보여지게함
         // 페이지 번호는 총 5개, 이후로는 [다음]으로 표시
