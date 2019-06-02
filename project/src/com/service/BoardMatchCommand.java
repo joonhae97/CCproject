@@ -78,7 +78,6 @@ public class BoardMatchCommand implements BoardCommand {
 				// 가장 먼저 신청한 사용자가 list의 끝에 있으므로 stack에 담아서 조건이 부합할 경우
 				// 가장 먼저 신청한 사용자가 먼저 최종 매칭 검사하게 함.
 				// 부합사용자들의 신청정보넣음.
-				System.out.println("count : " + count);
 				if (count >= 4) {
 					ApplyDTO dto = new ApplyDTO();
 					dto = Adao.application(data.getUserid());
@@ -97,7 +96,6 @@ public class BoardMatchCommand implements BoardCommand {
 		Udto = Udao.user(userid);
 		String matchinginfo = "매칭되지 않았습니다.매칭되면 연결해드리겠습니다.";
 		while (!matchinglist.empty()) {// 스택 빌때까지
-			System.out.println("stack");
 			ApplyDTO data = matchinglist.pop();
 
 			college = tokenizer(data.getCollege());
@@ -158,8 +156,6 @@ public class BoardMatchCommand implements BoardCommand {
 					return;
 				}
 			}
-			System.out.println(matchinginfo);
-			System.out.println("end");
 			request.setAttribute("matchinginfo", matchinginfo);
 		}
 	}
@@ -171,7 +167,6 @@ public class BoardMatchCommand implements BoardCommand {
 		while (tok.hasMoreTokens()) {
 			String data = tok.nextToken();
 			result.add(data);
-			System.out.println(data);
 		}
 		return result;
 	}

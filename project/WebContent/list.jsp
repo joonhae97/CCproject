@@ -101,55 +101,14 @@ pageEncoding="UTF-8"%>
     <br/><br/><br/>
 <h1>신청 목록 보기</h1>
 <hr style="width:80%">
-${matchinginfo}
 
-<!-- <script>
-    alert("1");
-    alert("${list[0].college}");
-    alert("2");
-    var c="${matchinginfo}";
-    <c:if test="${not empty matchinginfo}">
-    alert(c);
-
-    </c:if>
-    alert(c);
-</script> -->
-<%-- <c:if test="${check eq 'true'}">
-    <script>alert("${matchinginfo}")</script>
-</c:if> --%>
 <c:if test="${not empty matchinginfo}">
     <script>alert("${matchinginfo}");</script>
     <c:if test="${check eq  'true'}">
         <%-- <% response.sendRedirect("loginform.do"); %> --%>
     </c:if>
 </c:if>
-<%-- <c:if test="${not empty matchinginfo}">
-    <script>
 
-
-        alert("${matchinginfo}");
-        /*
-        document.write("<table border='1'>");
-        <c:forEach items="${list}" var="dto">
-        alert("${dto.userid}");
-        document.write("<tr>");
- */
-        /* document.write("	<td>${list[0].userid}</td>"); */
-        /* document.write("<td>${dto.gender}</td>");
-        document.write("<td>${dto.college}</td>");
-        document.write("<td>${dto.hometown}</td>");
-        document.write("<td>${dto.age}</td>");
-        document.write("<td>${dto.height}</td>");
-        document.write("<td>${dto.interesting}</td>");
-        document.write("<td>${dto.character}</td>");
-        document.write("<td>${dto.time}</td>"); */
-        /* document.write("</tr>"); */
-        /*
-                </c:forEach>
-                document.write("</table>"); */
-
-    </script>
-</c:if> --%>
 </div>
 <div class="applyList">
 <table border="1">

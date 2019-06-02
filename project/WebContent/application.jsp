@@ -103,8 +103,9 @@
     </tr>
     <tr>
         <td>키</td>
-        <td>${dto.height}</td>
+        <td>${dto.minheight}~${dto.maxheight}</td>
     </tr>
+    
     <tr>
         <td>취미</td>
         <td>${dto.interesting}</td>
